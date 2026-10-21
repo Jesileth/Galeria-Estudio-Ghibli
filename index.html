@@ -23,7 +23,7 @@
   </header>
 
   <main>
-    <section id="inicio" class="glass hero">
+    <section id="inicio" class="glass-hero">
       <h1>Colección de películas Studio Ghibli</h1>
       <p>Explora los mundos mágicos del estudio. Los datos llegan en vivo desde una API pública.</p>
       <a class="btn" href="#buscar">Buscar películas</a>
@@ -45,6 +45,33 @@
       </div>
     </section>
 
-  
+
+    <!--Buscar peliculas-->
+    <section id="buscar" class="glass panel">
+      <h2>Buscar películas</h2>
+      <form id="form" class="form">
+        <label class="field"><span>Título</span>
+          <input type="search" id="q" placeholder="Ej: Totoro, Chihiro…" autocomplete="off" /></label>
+        <label class="field"><span>Ordenar por</span>
+          <select id="sort">
+            <option value="year-desc">Año (más nuevas)</option>
+            <option value="year-asc">Año (más antiguas)</option>
+            <option value="title">Título (A–Z)</option>
+            <option value="score">Puntuación</option>
+          </select></label>
+        <button class="btn" type="submit">Buscar</button>
+      </form>
+      <p id="status" class="status" role="status" aria-live="polite">Cargando películas…</p>
+      <div id="results" class="results"></div>
+    </section>
+    
+
+        <dialog id="modal" class="glass-dialog">
+            <button id="close" class="icon close" aria-label="Cerrar">✕</button>
+            <div id="modal-body"></div>
+        </dialog>
+
+    <footer>Datos de <a href="https://ghibliapi.vercel.app" target="_blank" rel="noopener">Studio Ghibli API</a></footer>
+  <script src="/Galeria-Estudio-Ghibli/JavaScript/Script.js"></script>
 </body>
 </html>
