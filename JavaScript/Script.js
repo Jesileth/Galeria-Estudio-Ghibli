@@ -1,6 +1,7 @@
 /* ---------- Aca va la parte de la API ---------- */
-const API_URL = "https://ghibliapi.vercel.app/films";
+const API_URLS = ["https://ghibliapi.vercel.app/films"];
 const $ = (id) => document.getElementById(id);
+
 const esc = (s) => String(s ?? "").replace(/[&<>"']/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c]));
 
 /* ---------- 1. Reloj y fecha (se actualiza cada segundo) ---------- */
@@ -36,7 +37,7 @@ drawCalendar();
 /* ---------- 3. Consumo de la API con fetch + async/await ---------- */
 let films = [];
 let meta = "";
-async function fetchWithTimeout(url, ms = 8000) {
+async function fetchWithTimeout(url, ms = 25000) {
   const ctrl = new AbortController();
   const timer = setTimeout(() => ctrl.abort(), ms); // corta la petición si tarda demasiado
   try { return await fetch(url, { signal: ctrl.signal }); }
@@ -44,28 +45,42 @@ async function fetchWithTimeout(url, ms = 8000) {
 }
  
 async function loadFilms() {
-  $("status").className = "status";
-  $("status").textContent = "Cargando películas…";
-  for (const url of API_URLS) {
-    const t0 = performance.now();
+  const status = $("status");
+  status.className = "status";
+  status.textContent = "Cargando películas…";
+
+
+   for (const url of API_URLS) {
     try {
-      const res = await fetchWithTimeout(url);
-      if (!res.ok) throw new Error(`HTTP ${res.status}`);
-      const data = await res.json();
-      if (!Array.isArray(data) || !data.length) throw new Error("Respuesta vacía");
-      films = data;
-      meta = `HTTP ${res.status} · ${Math.round(performance.now() - t0)} ms`;
-      render();
-      drawGallery();
+      const res = await fetch(url);
+
+      if (!res.ok) {
+        throw new Error(`HTTP ${res.status}`);
+      }
+
+       const data = await res.json();
+
+      if (!Array.isArray(data) || data.length === 0) {
+        throw new Error("No hay datos");
+      }
+
+       films = data;
+      status.textContent = `${films.length} películas cargadas`;
+      render(); // o render(), si así lo llamas
       return;
     } catch (err) {
-      console.warn("Falló", url, err); // probamos con la siguiente URL
+      console.error("Error cargando películas:", err);
     }
   }
-  $("status").className = "status error";
-  $("status").innerHTML = 'No se pudieron cargar las películas. <button type="button" class="link" id="retry">Reintentar</button>';
-  $("retry").onclick = loadFilms;
+
+  status.className = "status error";
+  status.innerHTML =
+    'No se pudieron cargar las películas. <button type="button" class="link" id="retry">Reintentar</button>';
+
+  document.getElementById("retry").onclick = loadFilms;
 }
+
+loadFilms();
 
 
 /* ---------- 4. Buscar, ordenar y pintar ---------- */
