@@ -117,21 +117,39 @@ $("sort").addEventListener("change", render);
 /* ---------- 5. Detalle en ventana modal ---------- */
 function openDetail(id) {
   const f = films.find((x) => x.id === id);
+    
   if (!f) return;
+
   $("modal-body").innerHTML = `
     <img class="modal-banner" src="${esc(f.movie_banner)}" alt="Escena de ${esc(f.title)}" />
     <div class="modal-content">
       <h2>${esc(f.title)}</h2>
       <p class="muted">${esc(f.original_title)} · ${esc(f.original_title_romanised)}</p>
-      <div class="chips"><span class="chip">${esc(f.release_date)}</span><span class="chip">${esc(f.running_time)} min</span><span class="chip">★ ${esc(f.rt_score)}</span></div>
+      <div class="chips">
+        <span class="chip">${esc(f.release_date)}</span>
+        <span class="chip">${esc(f.running_time)} min</span>
+        <span class="chip">★ ${esc(f.rt_score)}</span>
+      </div>
       <p>${esc(f.description)}</p>
       <p class="muted">Director: ${esc(f.director)} · Productor: ${esc(f.producer)}</p>
     </div>`;
   $("modal").showModal();
 }
-["results", "gallery"].forEach((id) =>
-  $(id).addEventListener("click", (e) => { const b = e.target.closest("button"); if (b) openDetail(b.dataset.id); }));
-$("close").onclick = () => $("modal").close();
-$("modal").addEventListener("click", (e) => { if (e.target === $("modal")) $("modal").close(); });
- 
-loadFilms();
+["results", "gallery"].forEach((id) => {
+  const el = $(id);
+  if (!el) return;
+  el.addEventListener("click", (e) => {
+    const b = e.target.closest("button");
+    if (b) openDetail(b.dataset.id);
+  });
+});
+
+$("close").addEventListener("click", (e) => {
+  e.preventDefault();
+  e.stopPropagation();
+
+  if ($("modal").open) {
+    $("modal").close();
+  }
+});
+
