@@ -1,5 +1,7 @@
 /* ---------- Aca va la parte de la API ---------- */
-
+const API_URL = "https://ghibliapi.vercel.app/films";
+const $ = (id) => document.getElementById(id);
+const esc = (s) => String(s ?? "").replace(/[&<>"']/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c]));
 
 /* ---------- 1. Reloj y fecha (se actualiza cada segundo) ---------- */
 function tick() {
@@ -30,3 +32,91 @@ $("prev").onclick = () => { view = new Date(view.getFullYear(), view.getMonth() 
 $("next").onclick = () => { view = new Date(view.getFullYear(), view.getMonth() + 1, 1); drawCalendar(); };
 $("today").onclick = () => { view = new Date(); drawCalendar(); };
 drawCalendar();
+
+/* ---------- 3. Consumo de la API con fetch + async/await ---------- */
+let films = [];
+let meta = "";
+async function fetchWithTimeout(url, ms = 8000) {
+  const ctrl = new AbortController();
+  const timer = setTimeout(() => ctrl.abort(), ms); // corta la petición si tarda demasiado
+  try { return await fetch(url, { signal: ctrl.signal }); }
+  finally { clearTimeout(timer); }
+}
+ 
+async function loadFilms() {
+  $("status").className = "status";
+  $("status").textContent = "Cargando películas…";
+  for (const url of API_URLS) {
+    const t0 = performance.now();
+    try {
+      const res = await fetchWithTimeout(url);
+      if (!res.ok) throw new Error(`HTTP ${res.status}`);
+      const data = await res.json();
+      if (!Array.isArray(data) || !data.length) throw new Error("Respuesta vacía");
+      films = data;
+      meta = `HTTP ${res.status} · ${Math.round(performance.now() - t0)} ms`;
+      render();
+      drawGallery();
+      return;
+    } catch (err) {
+      console.warn("Falló", url, err); // probamos con la siguiente URL
+    }
+  }
+  $("status").className = "status error";
+  $("status").innerHTML = 'No se pudieron cargar las películas. <button type="button" class="link" id="retry">Reintentar</button>';
+  $("retry").onclick = loadFilms;
+}
+
+
+/* ---------- 4. Buscar, ordenar y pintar ---------- */
+function visible() {
+  const q = $("q").value.trim().toLowerCase();
+  const list = films.filter((f) => f.title.toLowerCase().includes(q) || f.original_title_romanised.toLowerCase().includes(q));
+  const sorters = {
+    "year-desc": (a, b) => b.release_date - a.release_date,
+    "year-asc": (a, b) => a.release_date - b.release_date,
+    title: (a, b) => a.title.localeCompare(b.title),
+    score: (a, b) => b.rt_score - a.rt_score,
+  };
+  return list.sort(sorters[$("sort").value]);
+}
+function render() {
+  const list = visible();
+  $("status").className = "status";
+  $("status").textContent = list.length ? `${list.length} película(s) · ${meta}` : "Sin resultados. Prueba con otro título.";
+  $("results").innerHTML = list.map((f) => `
+    <button class="film" data-id="${esc(f.id)}">
+      <img src="${esc(f.movie_banner)}" alt="Escena de ${esc(f.title)}" loading="lazy" />
+      <span class="info"><h3>${esc(f.title)}</h3><small>${esc(f.release_date)} · ★ ${esc(f.rt_score)}</small></span>
+    </button>`).join("");
+}
+function drawGallery() {
+  $("gallery").innerHTML = films.map((f) => `
+    <button data-id="${esc(f.id)}" aria-label="${esc(f.title)}"><img src="${esc(f.image)}" alt="Póster de ${esc(f.title)}" loading="lazy" /></button>`).join("");
+}
+$("form").addEventListener("submit", (e) => { e.preventDefault(); render(); });
+$("q").addEventListener("input", render);
+$("sort").addEventListener("change", render);
+
+
+/* ---------- 5. Detalle en ventana modal ---------- */
+function openDetail(id) {
+  const f = films.find((x) => x.id === id);
+  if (!f) return;
+  $("modal-body").innerHTML = `
+    <img class="modal-banner" src="${esc(f.movie_banner)}" alt="Escena de ${esc(f.title)}" />
+    <div class="modal-content">
+      <h2>${esc(f.title)}</h2>
+      <p class="muted">${esc(f.original_title)} · ${esc(f.original_title_romanised)}</p>
+      <div class="chips"><span class="chip">${esc(f.release_date)}</span><span class="chip">${esc(f.running_time)} min</span><span class="chip">★ ${esc(f.rt_score)}</span></div>
+      <p>${esc(f.description)}</p>
+      <p class="muted">Director: ${esc(f.director)} · Productor: ${esc(f.producer)}</p>
+    </div>`;
+  $("modal").showModal();
+}
+["results", "gallery"].forEach((id) =>
+  $(id).addEventListener("click", (e) => { const b = e.target.closest("button"); if (b) openDetail(b.dataset.id); }));
+$("close").onclick = () => $("modal").close();
+$("modal").addEventListener("click", (e) => { if (e.target === $("modal")) $("modal").close(); });
+ 
+loadFilms();
