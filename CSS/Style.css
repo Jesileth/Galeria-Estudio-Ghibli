@@ -291,10 +291,16 @@ footer a { color: var(--text); font-weight: 700; }
   border-radius: 18px;
   overflow: hidden;
   cursor: pointer;
-  box-shadow: 0 10px 22px rgba(250, 249, 249);
+  box-shadow: 0 10px 22px rgb(44, 40, 40);
   transition: transform 0.25s ease, box-shadow 0.25s ease;
-  border: none;
+  border: none
 }
+
+.film .info * {
+  color: #fff;
+  text-shadow: 0 2px 8px rgba(0,0,0,0.8);
+}
+
 
 .film:hover {
   transform: translateY(-6px) scale(1.02);
@@ -323,4 +329,10 @@ footer a { color: var(--text); font-weight: 700; }
   line-height: 1.2;
   color: white;
   font-weight: 700;
+}
+
+.film .score {
+  color: #fff;
+  font-weight: 700;
+  text-shadow: 0 2px 8px rgba(17, 16, 16, 0.989);
 }
