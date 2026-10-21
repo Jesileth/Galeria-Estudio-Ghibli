@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Studio Ghibli · Colección de películas</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@500;600&family=Nunito:wght@400;600;700&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="CSS/Style.css" />
+</head>
+<body>
+  <img class="kiki" src="Imagenes/kiki.png" alt="" aria-hidden="true" />
+
+  <header class="glass nav">
+    <a class="brand" href="#inicio">Studio Ghibli <span>Films</span></a>
+    <nav aria-label="Secciones">
+      <a href="#inicio">Inicio</a>
+      <a href="#reloj">Calendario</a>
+      <a href="#buscar">Buscar</a>
+      <a href="#galeria">Galería</a>
+    </nav>
+  </header>
+
+  <main>
+    <section id="inicio" class="glass hero">
+      <h1>Colección de películas Studio Ghibli</h1>
+      <p>Explora los mundos mágicos del estudio. Los datos llegan en vivo desde una API pública.</p>
+      <a class="btn" href="#buscar">Buscar películas</a>
+    </section>
+
+     <section id="reloj" class="two" aria-label="Fecha y hora">
+      <div class="glass clock">
+        <p id="time" class="time">--:--:--</p>
+        <p id="date" class="date">Cargando fecha…</p>
+      </div>
+      <div class="glass cal">
+        <div class="cal-head">
+          <button id="prev" class="icon" aria-label="Mes anterior">‹</button>
+          <h2 id="cal-title">Mes</h2>
+          <button id="next" class="icon" aria-label="Mes siguiente">›</button>
+        </div>
+        <div id="cal-grid" class="cal-grid"></div>
+        <button id="today" class="link">Ir a hoy</button>
+      </div>
+    </section>
+
+  
+</body>
+</html>
