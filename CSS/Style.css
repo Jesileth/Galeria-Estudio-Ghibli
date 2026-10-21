@@ -174,7 +174,7 @@ main
 /* Título */
 #buscar h2 {
   margin: 0 0 1.2rem;
-  font-size: clamp(2.1rem, 4vw, 3.3rem);
+  font-size: clamp(1.1rem, 2.8vw, 3.3rem);
   line-height: 1.05;
   letter-spacing: -0.04em;
   font-family: "Fredoka", sans-serif;
@@ -198,43 +198,30 @@ main
 }
 
 .field span {
-  font-weight: 600;
-  font-size: 1.05rem;
-  line-height: 1.2;
+  font-weight: 700;
+  font-size: 0.95rem;
   color: rgba(255,255,255,0.95);
 }
 
 .field input,
 .field select {
-  width: 80%;
-  min-height: 20px;
-  padding: 0.9rem 1.2rem;
-  border: 1px solid rgba(255,255,255,0.35);
+  width: 100%;
+  min-height: 52px;
+  padding: 0 1.2rem;
+  border: 1px solid rgba(255, 255, 255, 0.35);
   border-radius: 999px;
-  background: rgba(255,255,255,0.88);
+  background: rgba(255, 255, 255, 0.18);
+  backdrop-filter: blur(4px);
+  -webkit-backdrop-filter: blur(4px);
   color: var(--navy);
   font: inherit;
+  font-size: 1rem;
   box-sizing: border-box;
   outline: none;
 }
 
 .field input::placeholder {
-  color: rgba(18,50,74,0.65);
-}
-
-#form .btn {
-  width: 120%;
-  min-height: 60px;
-  padding: 0 2.2rem;
-  border: none;
-  border-radius: 999px;
-  background: rgba(255,255,255,0.92);
-  color: var(--navy);
-  font: inherit;
-  font-weight: 800;
-  cursor: pointer;
-  box-sizing: border-box;
-  white-space: nowrap;
+  color: rgba(255, 255, 255, 0.992);
 }
 
 .status {
@@ -304,7 +291,7 @@ footer a { color: var(--text); font-weight: 700; }
   border-radius: 18px;
   overflow: hidden;
   cursor: pointer;
-  box-shadow: 0 10px 22px rgba(0,0,0,0.22);
+  box-shadow: 0 10px 22px rgba(250, 249, 249);
   transition: transform 0.25s ease, box-shadow 0.25s ease;
   border: none;
 }

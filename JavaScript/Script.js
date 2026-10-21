@@ -66,7 +66,7 @@ async function loadFilms() {
 
        films = data;
       status.textContent = `${films.length} películas cargadas`;
-      render(); // o render(), si así lo llamas
+      render();
       return;
     } catch (err) {
       console.error("Error cargando películas:", err);
